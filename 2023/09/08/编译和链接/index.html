@@ -9,7 +9,7 @@
     
     <title>
         
-            test |
+            编译和链接 |
         
         hahahanba&#39;s Blog
     </title>
@@ -187,7 +187,7 @@
         <div class="article-content-container border-box">
 
             <div class="article-title">
-                <span class="title-hover-animation">test</span>
+                <span class="title-hover-animation">编译和链接</span>
             </div>
 
             
@@ -215,13 +215,13 @@
         
             <span class="meta-info-item article-create-date">
                 <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
-                <span class="pc">2023-08-17 00:19:26</span>
-                <span class="mobile">2023-08-17 00:19</span>
+                <span class="pc">2023-09-08 13:14:24</span>
+                <span class="mobile">2023-09-08 13:14</span>
             </span>
 
             <span class="meta-info-item article-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="pc">2023-08-17 00:19:26</span>
+                <span class="pc">2023-09-08 13:15:10</span>
             </span>
         
 
@@ -244,9 +244,13 @@
 
         
         
+            <span class="meta-info-item article-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>1k 字</span>
+            </span>
+        
         
             <span class="meta-info-item article-min2read">
-                <i class="icon fas fa-clock"></i>&nbsp;<span>1 分钟</span>
+                <i class="icon fas fa-clock"></i>&nbsp;<span>4 分钟</span>
             </span>
         
         
@@ -267,7 +271,56 @@
             <div class="article-content keep-markdown-body">
                 
 
-                
+                <h1 id="编译与连接"><a href="#编译与连接" class="headerlink" title="编译与连接"></a>编译与连接</h1><h2 id="1-被隐藏的过程"><a href="#1-被隐藏的过程" class="headerlink" title="1. 被隐藏的过程"></a>1. 被隐藏的过程</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Linux下，当我们使用GCC来编译Hello World程序时，只需要最简单的命令我们便可以在屏幕上打印出“Hello World”字样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ gcc hello.c</span><br><span class="line">$ ./a.out</span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
+
+<p>事实上，上述过程可以分解为以下四个过程：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="/Users/gygao/Notes/%E7%BC%96%E8%AF%91%E3%80%81%E9%93%BE%E6%8E%A5%E4%B8%8E%E5%BA%93/GCC%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B%E5%88%86%E8%A7%A3.png"
+                      alt="GCC编译过程分解"
+                ></p>
+<ul>
+<li>预处理(Prepressing)</li>
+<li>编译(Compilation)</li>
+<li>汇编(Assembly)</li>
+<li>链接(Linking)</li>
+</ul>
+<h3 id="1-1-预编译"><a href="#1-1-预编译" class="headerlink" title="1.1 预编译"></a>1.1 预编译</h3><p>预编译过程主要处理那些源代码文件中以“#”开始的预编译指令。比如<code>#include</code>、<code>#define</code>等，主要的处理规则如下：</p>
+<ul>
+<li>将所有的<code>#define</code>删除，并且展开所有的宏定义。</li>
+<li>处理所有条件预编译指令，比如<code>#if</code>、<code>#ifdef</code>、<code>#elif</code>、<code>#else</code>、<code>#endif</code>。</li>
+<li>处理<code>#include</code>预编译指令，将被包涵的文件插入到该预编译指令的位置。注意，这个过程是递归进行的，也就是说被包含的文件可能还包含其他的文件。</li>
+<li>删除所有的注释<code>//</code>和<code>/**/</code>。</li>
+<li>添加行号和文件名标识，比如<code>#2 hello.c 2</code>，以便编译时编译器产生调试用的行号信息及用于编译时产生编译错误或警告时能够显示行号。</li>
+<li>保留所有的<code>#pragma</code>编译器指令，因为编译器要使用它们。</li>
+</ul>
+<p>我们可是使用如下的命令，将源代码文件<code>hello.c</code>和相关的头文件如<code>stdio.h</code>等被预编译器<code>cpp</code>预编译成一个<code>.i</code>文件。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -E hello.c -o hello.i</span><br><span class="line">或者</span><br><span class="line">$ cpp hello.c &gt; hello.i</span><br></pre></td></tr></table></figure>
+
+<p>其<code>hello.i</code>文件如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">&quot;hello.c&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span> <span class="number">1</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span> <span class="number">3</span></span><br><span class="line"># <span class="number">384</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span> <span class="number">3</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command line&gt;&quot;</span> <span class="number">1</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;hello.c&quot;</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">char</span> <span class="type">__uint8_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">short</span> <span class="type">__int16_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">short</span> <span class="type">__uint16_t</span>;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> __vsnprintf_chk (<span class="type">char</span> * <span class="keyword">restrict</span>, <span class="type">size_t</span>, <span class="type">int</span>, <span class="type">size_t</span>,</span><br><span class="line">       <span class="type">const</span> <span class="type">char</span> * <span class="keyword">restrict</span>, va_list);</span><br><span class="line"># <span class="number">417</span> <span class="string">&quot;/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdio.h&quot;</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"># <span class="number">5</span> <span class="string">&quot;hello.c&quot;</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-编译"><a href="#1-2-编译" class="headerlink" title="1.2 编译"></a>1.2 编译</h3><p>编译过程就是把预处理完成的文件进行一系列词法分析、语法分析、语义分析及优化后生成相应的汇编代码文件。上面的编译过程相当于如下的命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -S hello.i -o hello.s</span><br><span class="line">或者</span><br><span class="line">$ gcc -S hello.c -o hello.s   <span class="comment">// 将预编译和编译合并</span></span><br></pre></td></tr></table></figure>
+
+<p>汇编代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">	.section	__TEXT,__text,regular,pure_instructions</span><br><span class="line">	.build_version macos, 13, 0	sdk_version 13, 3</span><br><span class="line">	.globl	_main                           ## -- Begin function main</span><br><span class="line">	.p2align	4, 0x90</span><br><span class="line">_main:                                  ## @main</span><br><span class="line">	.cfi_startproc</span><br><span class="line">## %bb.0:</span><br><span class="line">	pushq	%rbp</span><br><span class="line">	.cfi_def_cfa_offset 16</span><br><span class="line">	.cfi_offset %rbp, -16</span><br><span class="line">	movq	%rsp, %rbp</span><br><span class="line">	.cfi_def_cfa_register %rbp</span><br><span class="line">	subq	$16, %rsp</span><br><span class="line">	movl	$0, -4(%rbp)</span><br><span class="line">	leaq	L_.str(%rip), %rdi</span><br><span class="line">	movb	$0, %al</span><br><span class="line">	callq	_printf</span><br><span class="line">	xorl	%eax, %eax</span><br><span class="line">	addq	$16, %rsp</span><br><span class="line">	popq	%rbp</span><br><span class="line">	retq</span><br><span class="line">	.cfi_endproc</span><br><span class="line">                                        ## -- End function</span><br><span class="line">	.section	__TEXT,__cstring,cstring_literals</span><br><span class="line">L_.str:                                 ## @.str</span><br><span class="line">	.asciz	&quot;Hello World\n&quot;</span><br><span class="line"></span><br><span class="line">.subsections_via_symbols</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-汇编"><a href="#1-3-汇编" class="headerlink" title="1.3 汇编"></a>1.3 汇编</h3><p>汇编器是将汇编代码转变成机器可以执行的指令，每一个汇编语句几乎都对应一条机器指令。上述汇编过程我们可以用一下命令完成：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ as hello.s -o hello.o.  <span class="comment">// as是汇编器</span></span><br><span class="line">或者</span><br><span class="line">$ gcc -c hello.s -o hello.o  </span><br><span class="line">或者</span><br><span class="line">$ gcc -c hello.c -o hello.o   <span class="comment">// 经过预编译、编译和汇编直接输出目标文件（Object File）</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以使用<code>objdump -d hello.o </code>命令来查看 <code>.o</code>文件，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">hello.o:        file format mach-o 64-bit x86-64</span><br><span class="line"></span><br><span class="line">Disassembly of section __TEXT,__text:</span><br><span class="line"></span><br><span class="line">0000000000000000 &lt;_main&gt;:</span><br><span class="line">       0: 55                            pushq   %rbp</span><br><span class="line">       1: 48 89 e5                      movq    %rsp, %rbp</span><br><span class="line">       4: 48 83 ec 10                   subq    $16, %rsp</span><br><span class="line">       8: c7 45 fc 00 00 00 00          movl    $0, -4(%rbp)</span><br><span class="line">       f: 48 8d 3d 0f 00 00 00          leaq    15(%rip), %rdi          ## 0x25 &lt;_main+0x25&gt;</span><br><span class="line">      16: b0 00                         movb    $0, %al</span><br><span class="line">      18: e8 00 00 00 00                callq   0x1d &lt;_main+0x1d&gt;</span><br><span class="line">      1d: 31 c0                         xorl    %eax, %eax</span><br><span class="line">      1f: 48 83 c4 10                   addq    $16, %rsp</span><br><span class="line">      23: 5d                            popq    %rbp</span><br><span class="line">      24: c3                            retq</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-链接"><a href="#1-4-链接" class="headerlink" title="1.4 链接"></a>1.4 链接</h3><p>通常我们要将一大堆文件链接起来才可以得到<code>a.out</code>文件，即最终的可执行文件。我们可以通过以下命令来获取所有的编译选项：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gcc hello.c --verbose <span class="comment">// 或 gcc -v hello.c</span></span><br></pre></td></tr></table></figure>
+
+<p>输出的编译信息含义可参考<a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/questions/13440549/gcc-verbose-mode-output-explanation" >gcc-verbose<i class="fas fa-external-link-alt"></i></a>。</p>
+
             </div>
 
             
@@ -276,16 +329,16 @@
 <div class="article-copyright-info-container">
     <ul class="copyright-info-content">
         <li class="post-title">
-            <span class="type">本文标题</span>：<span class="content">test</span>
+            <span class="type">本文标题</span>：<span class="content">编译和链接</span>
         </li>
         <li class="post-author">
             <span class="type">本文作者</span>：<span class="content">hahahanba</span>
         </li>
         <li class="post-time">
-            <span class="type">创建时间</span>：<span class="content">2023-08-17 00:19:26</span>
+            <span class="type">创建时间</span>：<span class="content">2023-09-08 13:14:24</span>
         </li>
         <li class="post-link">
-            <span class="type">本文链接</span>：<span class="content">2023/08/17/test/</span>
+            <span class="type">本文链接</span>：<span class="content">2023/09/08/编译和链接/</span>
         </li>
         <li class="post-license">
             <span class="type">版权声明</span>：<span class="content">本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</span>
@@ -304,29 +357,14 @@
             
                 <div class="article-nav">
                     
-                        <div class="article-prev">
-                            <a class="prev"
-                               rel="prev"
-                               href="/2023/08/18/test1/"
-                            >
-                            <span class="left arrow-icon flex-center">
-                              <i class="fas fa-chevron-left"></i>
-                            </span>
-                                <span class="title flex-center">
-                                <span class="post-nav-title-item text-ellipsis">test1</span>
-                                <span class="post-nav-item">上一篇</span>
-                            </span>
-                            </a>
-                        </div>
-                    
                     
                         <div class="article-next">
                             <a class="next"
                                rel="next"
-                               href="/2023/08/17/hello-world/"
+                               href="/2023/08/18/test1/"
                             >
                             <span class="title flex-center">
-                                <span class="post-nav-title-item text-ellipsis">Hello World</span>
+                                <span class="post-nav-title-item text-ellipsis">test1</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                                 <span class="right arrow-icon flex-center">
@@ -429,7 +467,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap">
     <div class="post-toc">
-        
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">编译与连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%A2%AB%E9%9A%90%E8%97%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1. 被隐藏的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 预编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%BC%96%E8%AF%91"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E6%B1%87%E7%BC%96"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E9%93%BE%E6%8E%A5"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 链接</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
 
@@ -759,7 +797,7 @@ $search-header-height = 3rem
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap">
     <div class="post-toc">
-        
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">编译与连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%A2%AB%E9%9A%90%E8%97%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1. 被隐藏的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 预编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%BC%96%E8%AF%91"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E6%B1%87%E7%BC%96"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E9%93%BE%E6%8E%A5"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 链接</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
 
