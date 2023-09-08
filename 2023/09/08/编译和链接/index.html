@@ -221,7 +221,7 @@
 
             <span class="meta-info-item article-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="pc">2023-09-08 15:45:08</span>
+                <span class="pc">2023-09-08 16:01:22</span>
             </span>
         
 
@@ -254,12 +254,12 @@
         
         
             <span class="meta-info-item article-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>1k 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>1.2k 字</span>
             </span>
         
         
             <span class="meta-info-item article-min2read">
-                <i class="icon fas fa-clock"></i>&nbsp;<span>4 分钟</span>
+                <i class="icon fas fa-clock"></i>&nbsp;<span>5 分钟</span>
             </span>
         
         
@@ -280,7 +280,8 @@
             <div class="article-content keep-markdown-body">
                 
 
-                <h1 id="编译与连接"><a href="#编译与连接" class="headerlink" title="编译与连接"></a>编译与连接</h1><h1 id="被隐藏的过程"><a href="#被隐藏的过程" class="headerlink" title="被隐藏的过程"></a>被隐藏的过程</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                <p>对于平常的应用程序开发，我们很少需要关注编译与链接过程。因为通常的开发环境都是流行的集成开发环境（IDE），比如Visual Studio等。这样的IDE一般都将编译和链接的过程一步完成，通常这种编译和链接合并到一起的过程为构建（Build）。但是在这样的开发过程中，我们往往会被这些复杂的集成工具所提供的强大功能所迷惑，很多系统软件的运行机制与机理被掩盖，其程序的很多莫名其妙的错误让我们无所适从，面对程序运行时种种性能瓶颈我们束手无策。如果能够深入了解这些机制，那么解决这些问题就能够游刃有余，收放自如了。</p>
+<h1 id="被隐藏的过程"><a href="#被隐藏的过程" class="headerlink" title="被隐藏的过程"></a>被隐藏的过程</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在Linux下，当我们使用GCC来编译Hello World程序时，只需要最简单的命令我们便可以在屏幕上打印出“Hello World”字样</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ gcc hello.c</span><br><span class="line">$ ./a.out</span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
@@ -487,7 +488,7 @@
             <div class="pc-post-toc left-toc">
                 <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">编译与连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A2%AB%E9%9A%90%E8%97%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">被隐藏的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">2.1.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">2.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96"><span class="nav-number">2.3.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">2.4.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A2%AB%E9%9A%90%E8%97%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">被隐藏的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.1.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">1.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96"><span class="nav-number">1.3.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">1.4.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -527,7 +528,7 @@
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">全站总字数</span>
-                    <span class="item-value border-box word">1.1k</span>
+                    <span class="item-value border-box word">1.3k</span>
                 </span>
             
 
@@ -673,7 +674,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">编译与连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A2%AB%E9%9A%90%E8%97%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">被隐藏的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">2.1.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">2.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96"><span class="nav-number">2.3.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">2.4.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A2%AB%E9%9A%90%E8%97%8F%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">被隐藏的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.1.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">1.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%87%E7%BC%96"><span class="nav-number">1.3.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">1.4.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol>
     </div>
 </div>
 
