@@ -1,35 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2023/08/17/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a class="link"   href="https://hexo.io/" >Hexo<i class="fas fa-external-link-alt"></i></a>! This is your very first post. Check <a class="link"   href="https://hexo.io/docs/" >documentation<i class="fas fa-external-link-alt"></i></a> for more info. If you get any problems when using Hexo, you can find the answer in <a class="link"   href="https://hexo.io/docs/troubleshooting.html" >troubleshooting<i class="fas fa-external-link-alt"></i></a> or you can ask me on <a class="link"   href="https://github.com/hexojs/hexo/issues" >GitHub<i class="fas fa-external-link-alt"></i></a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>test</title>
-    <url>/2023/08/17/test/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>test1</title>
-    <url>/2023/08/18/test1/</url>
-    <content><![CDATA[<p> for deployment test</p>
-]]></content>
-  </entry>
-  <entry>
     <title>编译和链接</title>
     <url>/2023/09/08/%E7%BC%96%E8%AF%91%E5%92%8C%E9%93%BE%E6%8E%A5/</url>
     <content><![CDATA[<p>对于平常的应用程序开发，我们很少需要关注编译与链接过程。因为通常的开发环境都是流行的集成开发环境（IDE），比如Visual Studio等。这样的IDE一般都将编译和链接的过程一步完成，通常这种编译和链接合并到一起的过程为构建（Build）。但是在这样的开发过程中，我们往往会被这些复杂的集成工具所提供的强大功能所迷惑，很多系统软件的运行机制与机理被掩盖，其程序的很多莫名其妙的错误让我们无所适从，面对程序运行时种种性能瓶颈我们束手无策。如果能够深入了解这些机制，那么解决这些问题就能够游刃有余，收放自如了。</p>
@@ -82,6 +53,145 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">$ gcc hello.c --verbose <span class="comment">// 或 gcc -v hello.c</span></span><br></pre></td></tr></table></figure>
 
 <p>输出的编译信息含义可参考<a class="link"   href="https://stackoverflow.com/questions/13440549/gcc-verbose-mode-output-explanation" >gcc-verbose<i class="fas fa-external-link-alt"></i></a>。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>程序员的自我修养-链接，装载与库</li>
+</ul>
+]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>链接，装载与库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>目标文件有什么</title>
+    <url>/2023/09/12/%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6%E6%9C%89%E4%BB%80%E4%B9%88/</url>
+    <content><![CDATA[<h1 id="目标文件里有什么"><a href="#目标文件里有什么" class="headerlink" title="目标文件里有什么"></a>目标文件里有什么</h1><h2 id="目标文件的格式"><a href="#目标文件的格式" class="headerlink" title="目标文件的格式"></a>目标文件的格式</h2><p>现在PC平台流行的可执行文件格式（Executable）主要是Windows下的PE（Portable Executable）和Linux的ELF（Executable Linkable Format），它们都是COFF（Common file format）格式的变种。目标文件就是源代码编译后但未进行链接的那些中间文件（Windows下的.obj和Linux下的.o），它跟可执行文件的内容与格式很相似，所以一般与可执行文件采用一种格式存储。</p>
+<blockquote>
+<p>COFF的主要贡献是在目标文件里面引入了“段”的机制，不同的目标文件可以拥有不同数量及不同类型的“段”。另外，它还定义了调试数据格式。</p>
+</blockquote>
+<p>不光是可执行文件（Windows的.exe和Linux下的ELF可执行文件）按照可执行文件格式存储。动态链接库（DLL，Dynamic Linking Library）（Windows的.dll和Linux的.so）及静态链接库（Static Linking Library）（Windows的.lib和Linux的.a）文件都按照可执行文件格式存储。它们在Windows下都按照PE-<strong>COFF格式</strong>存储，Linux下按照ELF格式存储。下表为系统中采用的ELF文件格式类型：</p>
+<table>
+<thead>
+<tr>
+<th align="center">ELF文件类型</th>
+<th align="center">说明</th>
+<th align="center">实例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">可重定位文件（Relocatable File）</td>
+<td align="center">这类文件包含了代码和数据，可以被用来链接成可执行文件或共享目标文件，静态链接库也可以归为这一类</td>
+<td align="center">Linux的.o Windows的.obj</td>
+</tr>
+<tr>
+<td align="center">可执行文件（Executable File）</td>
+<td align="center">这类文件包含了可以直接执行的程序，它的代表就是ELF可执行文件，他们一般都没有扩展名</td>
+<td align="center">比如&#x2F;bin&#x2F;bash文件  Windows的.exe</td>
+</tr>
+<tr>
+<td align="center">共享目标文件 （Shared Object File）</td>
+<td align="center">这种文件包含了代码和数据，可以在以下两种情况使用。一种是链接器可以使用这种文件跟其他的可重定位文件和共享目标文件链接，产生新的目标文件。第二种是动态链接，产生可以将几个这种共享目标文件与可执行文件结合，作为进程影响的一部分来运行</td>
+<td align="center">Linux的.so，如&#x2F;lib&#x2F;glibc-2.5.so Windows的DLL</td>
+</tr>
+<tr>
+<td align="center">核心转储文件（Core Dump File）</td>
+<td align="center">当进程意外终止时，系统可以将该进程的地址空间的内容及终止时的一些其他信息转储到核心转储文件</td>
+<td align="center">Linux下的从core dump</td>
+</tr>
+</tbody></table>
+<p>在Linux下，我们可以使用file命令来查看相应的文件格式：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">$ file hello.o</span><br><span class="line">hello.o: ELF <span class="number">64</span>-bit LSB relocatable, x86<span class="number">-64</span>, version <span class="number">1</span> (SYSV), not stripped</span><br><span class="line">$ file /bin/bash</span><br><span class="line">bash: ELF <span class="number">64</span>-bit LSB shared object, x86<span class="number">-64</span>, version <span class="number">1</span> (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86<span class="number">-64.</span>so<span class="number">.2</span>, <span class="keyword">for</span> GNU/Linux <span class="number">3.2</span><span class="number">.0</span>, BuildID[sha1]=<span class="number">6386b</span>644ab2d987986aeb40325a787a035a4f0d8, stripped</span><br></pre></td></tr></table></figure>
+
+<h2 id="目标文件是什么样的"><a href="#目标文件是什么样的" class="headerlink" title="目标文件是什么样的"></a>目标文件是什么样的</h2><p>程序的源代码编译后的机器指令经常被放倒代码段（Code Section）里，代码段中常见的名字有<code>.code</code>,<code>.text</code>;全局变量和局部静态变量数据经常放在数据段（Data Section），数据段的一般名字都叫<code>.data</code>。一个简单的程序被编译成目标文件后的结构如下图所示：</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://cdn.staticaly.com/gh/hahahanba/hahahanba.github.io@main/images/%E7%A8%8B%E5%BA%8F%E4%B8%8E%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6.24jflnm6juww.webp"
+                     
+                ></p>
+<p>下面让我们来看看目标文件中具体会有什么。</p>
+<h2 id="挖掘SimpleSection-o文件"><a href="#挖掘SimpleSection-o文件" class="headerlink" title="挖掘SimpleSection.o文件"></a>挖掘SimpleSection.o文件</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">printf</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* format, ...)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> global_init_var = <span class="number">84</span>;</span><br><span class="line"><span class="type">int</span> global_uninit_var;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">func1</span><span class="params">(<span class="type">int</span> i)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> static_var = <span class="number">85</span>;</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> static_var2;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="type">int</span> b;</span><br><span class="line"></span><br><span class="line">    func1(static_var + static_var2 + a+ b);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以先将上述程序生成<code>.o</code>文件，然后利用objdump命令查看其ELF文件段的信息。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">$ gcc -c SimpleSection.c</span><br><span class="line">$ objdump -h SimpleSection.o  <span class="comment">// 参数-h可以打印ELF文件各个段的基本信息</span></span><br><span class="line"></span><br><span class="line">SimpleSection.o:     file format elf64-x86<span class="number">-64</span></span><br><span class="line"></span><br><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  <span class="number">0</span> .text         <span class="number">00000057</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">00000040</span>  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE</span><br><span class="line">  <span class="number">1</span> .data         <span class="number">00000008</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">00000098</span>  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, DATA</span><br><span class="line">  <span class="number">2</span> .bss          <span class="number">00000004</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">000000</span>a0  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  ALLOC</span><br><span class="line">  <span class="number">3</span> .rodata       <span class="number">00000004</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">000000</span>a0  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, READONLY, DATA</span><br><span class="line">  <span class="number">4</span> .comment      <span class="number">0000002</span>a  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">000000</span>a4  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, READONLY</span><br><span class="line">  <span class="number">5</span> .note.GNU-<span class="built_in">stack</span> <span class="number">00000000</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">000000</span>ce  <span class="number">2</span>**<span class="number">0</span></span><br><span class="line">                  CONTENTS, READONLY</span><br><span class="line">  <span class="number">6</span> .eh_frame     <span class="number">00000058</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">000000</span>d0  <span class="number">2</span>**<span class="number">3</span></span><br><span class="line">                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA</span><br></pre></td></tr></table></figure>
+
+<p>从上面的结果来看，<code>SimpleSection.o</code>的段的数量比我们想象中的多，除了最基本的代码段、数据段和BSS段以外，还有4个段分别为只读数据段<code>.rodata</code>、注释信息段<code>.commit</code>、堆栈提示段<code>.note.GNU-stack</code>和堆栈回溯段<code>.eh_frame</code>。每个段的第一行容易理解的是段的长度（Size）和段所在的位置（File Offset），每个段中的第二行中的<code>CONTENTS</code>，<code>ALLOC</code>等标识段的各种属性，<code>CONTENTS</code>表示该段在文件中存在。我们可以看到BSS段没有<code>CONTENTS</code>，表示实际上在ELF文件中不存在内容。<code>.note.GNU-stack</code>段虽有<code>CONTENTS</code>，但长度为0。那么在ELF文件中实际存在的也就是<code>.text</code>、<code>.data</code>、<code>.rodata</code>、<code>.comment</code>和<code>.eh_frame</code>这5个段了。只考虑前四个段，那么它们在ELF中的结构如下图所示。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://cdn.staticaly.com/gh/hahahanba/hahahanba.github.io@main/images/SimpleSection.37f7463c8vc0.png"
+                      alt="SimpleSection"
+                ></p>
+<h3 id="代码段"><a href="#代码段" class="headerlink" title="代码段"></a>代码段</h3><p>我们可以利用objdump来查看代码段的内容。Contents of section .text 就是<code>.text</code>的十六进制内容，总共0x57字节。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// -s可以将所有段的内容以十六进制的方式打印出来</span></span><br><span class="line"><span class="comment">// -d可以将所有包含指令的段反汇编</span></span><br><span class="line">$ objdump -s -d SimpleSection.o </span><br><span class="line">SimpleSection.o:     file format elf64-x86<span class="number">-64</span></span><br><span class="line"></span><br><span class="line">Contents of section .text:</span><br><span class="line"> <span class="number">0000</span> <span class="number">554889e5</span> <span class="number">4883</span>ec10 <span class="number">897</span>dfc8b <span class="number">45f</span>c89c6  UH..H....&#125;..E...</span><br><span class="line"> <span class="number">0010</span> <span class="number">488</span>d3d00 <span class="number">000000b</span>8 <span class="number">00000000</span> e8000000  H.=.............</span><br><span class="line"> <span class="number">0020</span> <span class="number">0090</span>c9c3 <span class="number">554889e5</span> <span class="number">4883</span>ec10 c745f801  ....UH..H....E..</span><br><span class="line"> <span class="number">0030</span> <span class="number">0000008b</span> <span class="number">15000000</span> <span class="number">008b</span>0500 <span class="number">00000001</span>  ................</span><br><span class="line"> <span class="number">0040</span> c28b45f8 <span class="number">01</span>c28b45 fc01d089 c7e80000  ..E....E........</span><br><span class="line"> <span class="number">0050</span> <span class="number">00008b</span>45 f8c9c3                      ...E...</span><br><span class="line">......</span><br><span class="line">Disassembly of section .text:</span><br><span class="line"></span><br><span class="line"><span class="number">0000000000000000</span> &lt;func1&gt;:</span><br><span class="line">   <span class="number">0</span>:	<span class="number">55</span>                   	push   %rbp</span><br><span class="line">   <span class="number">1</span>:	<span class="number">48</span> <span class="number">89</span> e5             	mov    %rsp,%rbp</span><br><span class="line">   <span class="number">4</span>:	<span class="number">48</span> <span class="number">83</span> ec <span class="number">10</span>          	sub    $<span class="number">0x10</span>,%rsp</span><br><span class="line">   <span class="number">8</span>:	<span class="number">89</span> <span class="number">7</span>d fc             	mov    %edi,<span class="number">-0x4</span>(%rbp)</span><br><span class="line">   b:	<span class="number">8b</span> <span class="number">45</span> fc             	mov    <span class="number">-0x4</span>(%rbp),%eax</span><br><span class="line">   e:	<span class="number">89</span> c6                	mov    %eax,%esi</span><br><span class="line">  <span class="number">10</span>:	<span class="number">48</span> <span class="number">8</span>d <span class="number">3</span>d <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	lea    <span class="number">0x0</span>(%rip),%rdi        # <span class="number">17</span> &lt;func1+<span class="number">0x17</span>&gt;</span><br><span class="line">  <span class="number">17</span>:	b8 <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	mov    $<span class="number">0x0</span>,%eax</span><br><span class="line">  <span class="number">1</span>c:	e8 <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	callq  <span class="number">21</span> &lt;func1+<span class="number">0x21</span>&gt;</span><br><span class="line">  <span class="number">21</span>:	<span class="number">90</span>                   	nop</span><br><span class="line">  <span class="number">22</span>:	c9                   	leaveq</span><br><span class="line">  <span class="number">23</span>:	c3                   	retq</span><br><span class="line"></span><br><span class="line"><span class="number">0000000000000024</span> &lt;main&gt;:</span><br><span class="line">  <span class="number">24</span>:	<span class="number">55</span>                   	push   %rbp</span><br><span class="line">  <span class="number">25</span>:	<span class="number">48</span> <span class="number">89</span> e5             	mov    %rsp,%rbp</span><br><span class="line">  <span class="number">28</span>:	<span class="number">48</span> <span class="number">83</span> ec <span class="number">10</span>          	sub    $<span class="number">0x10</span>,%rsp</span><br><span class="line">  <span class="number">2</span>c:	c7 <span class="number">45</span> f8 <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	movl   $<span class="number">0x1</span>,<span class="number">-0x8</span>(%rbp)</span><br><span class="line">  <span class="number">33</span>:	<span class="number">8b</span> <span class="number">15</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>    	mov    <span class="number">0x0</span>(%rip),%edx        # <span class="number">39</span> &lt;main+<span class="number">0x15</span>&gt;</span><br><span class="line">  <span class="number">39</span>:	<span class="number">8b</span> <span class="number">05</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>    	mov    <span class="number">0x0</span>(%rip),%eax        # <span class="number">3f</span> &lt;main+<span class="number">0x1b</span>&gt;</span><br><span class="line">  <span class="number">3f</span>:	<span class="number">01</span> c2                	add    %eax,%edx</span><br><span class="line">  <span class="number">41</span>:	<span class="number">8b</span> <span class="number">45</span> f8             	mov    <span class="number">-0x8</span>(%rbp),%eax</span><br><span class="line">  <span class="number">44</span>:	<span class="number">01</span> c2                	add    %eax,%edx</span><br><span class="line">  <span class="number">46</span>:	<span class="number">8b</span> <span class="number">45</span> fc             	mov    <span class="number">-0x4</span>(%rbp),%eax</span><br><span class="line">  <span class="number">49</span>:	<span class="number">01</span> d0                	add    %edx,%eax</span><br><span class="line">  <span class="number">4b</span>:	<span class="number">89</span> c7                	mov    %eax,%edi</span><br><span class="line">  <span class="number">4</span>d:	e8 <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span>       	callq  <span class="number">52</span> &lt;main+<span class="number">0x2e</span>&gt;</span><br><span class="line">  <span class="number">52</span>:	<span class="number">8b</span> <span class="number">45</span> f8             	mov    <span class="number">-0x8</span>(%rbp),%eax</span><br><span class="line">  <span class="number">55</span>:	c9                   	leaveq</span><br><span class="line">  <span class="number">56</span>:	c3                   	retq</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据段和只读数据段"><a href="#数据段和只读数据段" class="headerlink" title="数据段和只读数据段"></a>数据段和只读数据段</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">......</span><br><span class="line">Contents of section .data:</span><br><span class="line"> <span class="number">0000</span> <span class="number">54000000</span> <span class="number">55000000</span>                    T...U...</span><br><span class="line">Contents of section .rodata:</span><br><span class="line"> <span class="number">0000</span> <span class="number">25640</span>a00                             %d..</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p><code>.data</code>段保存的是那些已经初始化了的全局变量和局部静态变量，分别为<code>global_init_varabal</code>、<code>static_var</code>，这两个变量每个4字节，一共8个字节，即<code>54000000</code>对应于十进制84，<code>55000000</code>对应于十进制85。另外，我们在程序中用到了一个字符串常量“%d\n”，它是一种只读数据，所以放到了<code>.rodata</code>段。</p>
+<blockquote>
+<p>.rodata段存放的只读数据一般是程序里面的只读变量（如const修饰的变量）和字符串常量。单独设立“.rodata”不光在语意上支持了c++的const关键字，而且操作系统在加载的时候可以将“.rodata”段的属性映射成只读，这样对于这个段的任何修改操作都会作为非法操作处理，保证了程序的安全性。</p>
+</blockquote>
+<h3 id="BSS段"><a href="#BSS段" class="headerlink" title="BSS段"></a>BSS段</h3><p><code>.bss</code>段保存的是未初始化的全局变量和局部静态变量，如<code>global_uninit_varabal</code>、<code>static_var2</code>。可以看到两个变量共占有8个字节，实际上该段的大小为4字节，这是因为不同的语言与不同的编译器实现有关，有的编译器会将全局的未初始化变量存放在<code>.bss</code>段，有的只是预留一个未定义的全局变量符号，等到最终链接成可执行文件的时候再在<code>.bss</code>段分配空间。（编译单元内部可见的静态变量的确是存放在<code>.bss</code>段）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Sections:</span><br><span class="line">Idx Name          Size      VMA               LMA               File off  Algn</span><br><span class="line">  <span class="number">2</span> .bss          <span class="number">00000004</span>  <span class="number">0000000000000000</span>  <span class="number">0000000000000000</span>  <span class="number">000000</span>a0  <span class="number">2</span>**<span class="number">2</span></span><br><span class="line">                  ALLOC</span><br></pre></td></tr></table></figure>
+
+<h3 id="其他段"><a href="#其他段" class="headerlink" title="其他段"></a>其他段</h3><table>
+<thead>
+<tr>
+<th>常用的段名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.rodata1</td>
+<td>跟.rodata一样</td>
+</tr>
+<tr>
+<td>.comment</td>
+<td>编译器版本信息，如GCC: (Ubuntu 7. 5.0-3ubuntu1~18.04) 7.5.0.</td>
+</tr>
+<tr>
+<td>.debug</td>
+<td>调试信息</td>
+</tr>
+<tr>
+<td>.dynamic</td>
+<td>动态链接信息</td>
+</tr>
+<tr>
+<td>.hash</td>
+<td>符号哈希表</td>
+</tr>
+<tr>
+<td>.line</td>
+<td>调试时的行号表，即源代码行号与编译后指令的对应表</td>
+</tr>
+<tr>
+<td>.note</td>
+<td>额外的编译器信息。如程序的公司名、发布的版本号等</td>
+</tr>
+<tr>
+<td>.strtab</td>
+<td>String Table字符串表，用于存储ELF文件中用到的各种字符串</td>
+</tr>
+<tr>
+<td>.symtab</td>
+<td>Symbol Table符号表</td>
+</tr>
+<tr>
+<td>.shstrtab</td>
+<td>Section String Table段名表</td>
+</tr>
+<tr>
+<td>.plt .got</td>
+<td>动态链接的跳转表和全局入口表</td>
+</tr>
+<tr>
+<td>.init .fini</td>
+<td>程序初始化与终结代码段</td>
+</tr>
+</tbody></table>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li>程序员的自我修养-链接，装载与库</li>
 </ul>
