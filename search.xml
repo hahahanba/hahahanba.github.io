@@ -597,6 +597,17 @@
 </ul>
 <p>其中，情况1由于多个强符号定义本身就是非法的，所以链接器就会报错。对于后两种情况，编译器和链接器采用一种叫 <strong>COMMON块（Common Block ）</strong> 的机制来处理。其过程如下：</p>
 <p><strong>首先，编译器将未初始化的全局变量定义为弱符号处理。对于情况3，最终链接时选择最大的类型。对于情况2，最终输出结果中的符号所占空间与强符号相同，如果链接过程中有弱符号大于强符号，链接器会发出警告。</strong></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a class="link"   href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format" >Executable and Linkable Format<i class="fas fa-external-link-alt"></i></a></li>
+<li>《程序员的自我修养——链接、装载与库》</li>
+<li><a class="link"   href="https://man7.org/linux/man-pages/man5/elf.5.html" >ELF man page<i class="fas fa-external-link-alt"></i></a></li>
+</ol>
 ]]></content>
+      <categories>
+        <category>OS</category>
+      </categories>
+      <tags>
+        <tag>链接，装载与库</tag>
+      </tags>
   </entry>
 </search>
