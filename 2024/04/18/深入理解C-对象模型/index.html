@@ -221,13 +221,19 @@
 
             <span class="meta-info-item article-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="pc">2024-04-18 10:26:03</span>
+                <span class="pc">2024-04-18 10:56:55</span>
             </span>
         
 
         
             <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
                 <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/C/">C++</a>
+                            </li>
+                        
                     
                 </ul>
             </span>
@@ -237,6 +243,9 @@
             <span class="article-tag meta-info-item border-box">
                 <i class="icon fas fa-tags"></i>&nbsp;
                 <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B/">深入理解对象模型</a></li>
+                        
                     
                 </ul>
             </span>
@@ -304,36 +313,33 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Point</span>(<span class="type">float</span> xval);</span><br><span class="line">  <span class="keyword">virtual</span> ~<span class="built_in">Point</span>();</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">x</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">  <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">PointCount</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> ostream&amp; <span class="title">print</span><span class="params">(ostream &amp;os)</span> <span class="type">const</span></span>;</span><br><span class="line">  </span><br><span class="line">  <span class="type">float</span> _x;</span><br><span class="line">  <span class="type">static</span> <span class="type">int</span> _point_count;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h3 id="1-1-1-简单对象模型"><a href="#1-1-1-简单对象模型" class="headerlink" title="1.1.1 简单对象模型"></a>1.1.1 简单对象模型</h3><p>在简单模型中，一个对象由一系列的 slots 构成，每一个 slot 指向一个 members。Members 按其声明顺序，各被指定一个 slot。每一个 data member 或 function member 都有自己的一个slot。</p>
-<img  
+<p><img  
                      lazyload
                      alt="image"
-                     data-src="./img/SimpleObjectModel.png"
-                      alt="SimpleObjectModel" style="zoom:50%;" 
-                >
-
+                     data-src="https://pic.imgdb.cn/item/66208aac0ea9cb1403bd9dc9.png"
+                      alt="SimpleObjectModel"
+                ></p>
 <p>在这个简单模型下，members 本身并不放在对象内，只有“指向member 的指针” 才放在对象内（避免了“members 有<strong>不同的类型，因而需要不同的存储空间</strong>” 的问题）。对象中的 members 是通过 slot 的索引值来寻址的，本例之中_x的索引是6，_point_counrt 的索引是7。</p>
 <p>需要注意这个模型并没有被应用于实际产品上，不过关于<strong>索引或 slot 个数的观念，</strong> 倒是被应用到C++的“指向成员的指针” (pointer-to-member)观念之中。</p>
 <h3 id="1-1-2-表格驱动对象模型"><a href="#1-1-2-表格驱动对象模型" class="headerlink" title="1.1.2 表格驱动对象模型"></a>1.1.2 表格驱动对象模型</h3><p>如果对所有类中所有对象都有一致的表达方式的话，就可以采用下面的模型。该对象模型把所有与members 相关的信息抽出来，放在一个 <strong>data member table</strong> 和一个 <strong>member functiontable</strong> 之中，class object 本身则内含指向这两个表格的指针。Member function table 是一系列的 slots，每一个slot 指向一个member function；Data member table 则直接持有 data 本身。(<strong>没有实际应用于真正的 C++ 编译器身上</strong>，但 member function table 这个观念却成为支持virtual functions的一个有效方案)</p>
-<img  
+<p><img  
                      lazyload
                      alt="image"
-                     data-src="./img/MemberTableModel.png"
-                      style="zoom:50%;" 
-                >
-
+                     data-src="https://pic.imgdb.cn/item/66208aac0ea9cb1403bda15c.png"
+                      alt="MemberTableModel"
+                ></p>
 <h3 id="1-1-3-C-对象模型"><a href="#1-1-3-C-对象模型" class="headerlink" title="1.1.3 C++对象模型"></a>1.1.3 C++对象模型</h3><p>前两个模型有两个主要问题：引入的指针过多，空间浪费严重；另一个则是添加的索引层次过多，导致数据存取性能较低。C++对象模型是从简单对象模型派生而来，并对内存空间和存取时间做了优化。在此模型下：</p>
 <ul>
 <li>Nonstatic data members 放在每一个类对象之内；</li>
 <li>static data members 存放在类对象之外；</li>
 <li>Static和nonstatic function members 也被放在类对象之外。</li>
 </ul>
-<img  
+<p><img  
                      lazyload
                      alt="image"
-                     data-src="/Users/gygao/Notes/深入理解对象模型/img/C++ObjectModel.png"
-                      style="zoom:50%;" 
-                >
-
+                     data-src="https://pic.imgdb.cn/item/66208ab80ea9cb1403bdf13d.png"
+                      alt="C++ObjectModel"
+                ></p>
 <ul>
 <li>虚函数机制则由以下的 2 个的两个步骤来支持:<ul>
 <li>每一个class会产生一个虚表(vtbl, vtable)，虚表中存放着一系列指向虚函数的指针;</li>
@@ -408,15 +414,12 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Bear</span> : <span class="keyword">public</span> ZooAnimal</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Bear</span>();</span><br><span class="line">  ~<span class="built_in">Bear</span>();</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">rotate</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">dance</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="keyword">enum</span> <span class="title class_">Dances</span> &#123; ... &#125;;</span><br><span class="line">  </span><br><span class="line">  Dances dances_known;</span><br><span class="line">  <span class="type">int</span> cell_block;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function">Bear <span class="title">b</span><span class="params">(<span class="string">&quot;Yogi&quot;</span>)</span></span>;</span><br><span class="line">Bear *pb = &amp;b;</span><br><span class="line">Bear &amp;rb = *pb;</span><br></pre></td></tr></table></figure>
 
 <p><code>b,pb,rb</code>会有怎样的内存需求？ 不管是<code>pointer</code>或<code>reference</code>都只需要一个word的空间。Bear object需要24bytes, 也就是 ZooAnimal 的16bytes加上Bear所带来的8bytes。其可能的内存布局如下：</p>
-<img  
+<p><img  
                      lazyload
                      alt="image"
-                     data-src="/Users/gygao/Notes/深入理解对象模型/img/DerivedLayout.png"
-                      style="zoom:50%;" 
-                >
-
-
-
+                     data-src="https://pic.imgdb.cn/item/66208ab20ea9cb1403bdc6fe.png"
+                      alt="DerivedLayout"
+                ></p>
 <p>多态只能由”指针“或”引用“来实现，根本原因在于:</p>
 <ul>
 <li>指针和引用(通常以指针来实现)的大小是固定的(一个word)，而对象的大小却是可变的。其类的指针和引用可以指向(或引用)子类，但是基类的对象永远也只能是基类，没有变化则不可能引发多态。</li>
@@ -454,6 +457,14 @@
                 </div>
             
 
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B/"><i class="icon fas fa-hashtag"></i>深入理解对象模型</a>&nbsp;
+                        </li>
+                    
+                </ul>
             
 
             
