@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="xx">
+    <meta name="author" content="hahahanba">
+    
+    <title>
+        
+            深入理解C++对象模型(三) |
+        
+        hahahanba&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.staticaly.com/gh/hahahanba/hahahanba.github.io@main/images/star.5dh2c651m3k0.webp">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/font/css/brands.min.css">
+    
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"hahahanba.github.io","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"left"},"style":{"primary_color":"#0066cc","logo":"","favicon":"https://cdn.staticaly.com/gh/hahahanba/hahahanba.github.io@main/images/star.5dh2c651m3k0.webp","avatar":"https://i.imgur.com/9lnXdbm.png","first_screen":{"enable":true,"header_transparent":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"scroll":{"progress_bar":false,"percent":false}},"local_search":{"enable":true,"preload":true},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"side_tools":{},"pjax":{"enable":false},"lazyload":{"enable":true},"comment":{"enable":true,"use":"giscus","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":"hahahanba/comments","repo_id":"R_kgDOKGpC9g","category":"Announcements","category_id":"DIC_kwDOKGpC9s4CYk-p","reactions_enabled":true}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["Trainee","Engineer","Architect","emmm..."]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"img_align":"left"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"version":"3.7.3"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+            <a class="site-name border-box" href="/">
+               hahahanba&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >
+                                友链
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links">友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+
+                
+
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+
+        <div class="article-content-container border-box">
+
+            <div class="article-title">
+                <span class="title-hover-animation">深入理解C++对象模型(三)</span>
+            </div>
+
+            
+                <div class="article-header border-box">
+                    
+                        <div class="avatar-box border-box">
+                            <img src="https://i.imgur.com/9lnXdbm.png">
+                        </div>
+                    
+                    <div class="info-box">
+                        <div class="author">
+                            <span class="name">hahahanba</span>
+                            
+                                <span class="author-label">Lv1</span>
+                            
+                        </div>
+                        <div class="meta-info border-box">
+                            
+
+<div class="article-meta-info-container border-box post">
+    <div class="article-meta-info border-box">
+        
+
+
+        
+            <span class="meta-info-item article-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-04-23 13:46:02</span>
+                <span class="mobile">2024-04-23 13:46</span>
+            </span>
+
+            <span class="meta-info-item article-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc">2024-04-23 13:57:24</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item article-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul>
+                    
+                            <li class="category-item">
+                                
+                                <a href="/categories/C/">C++</a>
+                            </li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="article-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul>
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B/">深入理解对象模型</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item article-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>3.3k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item article-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>13 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item article-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <h1 id="Data语义学"><a href="#Data语义学" class="headerlink" title="Data语义学"></a>Data语义学</h1><h2 id="一、数据成员的绑定"><a href="#一、数据成员的绑定" class="headerlink" title="一、数据成员的绑定"></a>一、数据成员的绑定</h2><p>考虑下面的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 某个foo.h头文件，从某处含入</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">float</span> x;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Point3d.h文件</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Point3d</span>(<span class="type">float</span>, <span class="type">float</span>, <span class="type">float</span>);</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">X</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> x; &#125;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">X</span><span class="params">(<span class="type">float</span> new_x)</span> <span class="type">const</span> </span>&#123; x = new_x; &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> x, y, z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>C++</code> 早期如果在 <code>Point3d::X()</code> 的两个函数实例中对<code>x</code>做出调用操作，该操作将会指向全局的<code>x</code>对象。这样因此也导出了 <code>C++</code> 的两种防御性程序设计风格：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 把所有的数据成员放在类声明起头处，以确保正确的绑定</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// 防御性程序设计风格 #1</span></span><br><span class="line">  <span class="comment">// 在类声明起头处先放置所有的数据成员</span></span><br><span class="line">  <span class="type">float</span> x, y, z;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">X</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> x; &#125;</span><br><span class="line">  <span class="comment">// ... etc. ...</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 把所有的内联函数，不管大小都放在类声明之外</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// 防御性程序设计风格 #2</span></span><br><span class="line">  <span class="comment">// 把所有的内联函数都移到类之外</span></span><br><span class="line">  <span class="built_in">Point3d</span>();</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">X</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">X</span><span class="params">(<span class="type">float</span>)</span> <span class="type">const</span></span>;</span><br><span class="line">  <span class="comment">// ... etc. ...</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">float</span> <span class="title">Point3d::X</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> x; &#125;</span><br><span class="line"><span class="comment">// ... etc. ...</span></span><br></pre></td></tr></table></figure>
+
+<p>自从<code>C++ 2.0</code>之后，它们的必要性消失了。现在的函数即使在声明之后马上定义，对于函数本体的分析也会延迟到整个类声明完成之后才分析。<strong>因此一个内联函数函数体内的一个数据成员的绑定操作，会在整个类声明完成之后才发生。</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> x;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// 对于函数本体的分析将延迟，直到类声明的右括号出现才开始</span></span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">X</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> x; &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> x;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 事实上，分析在这里进行 </span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意，上述对于成员函数的参数列表并不为真。参数列表中的名称还是会在它们第一次遇到时被适当地决议完成。因此在<code>extern</code>和<code>nested type names</code>之间的非直觉绑定操作还是会发生。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">int</span> length;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// length被决议为global，_val被决议为Point3d::_val</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">mumble</span><span class="params">( length val )</span> </span>&#123; _val = val; &#125;</span><br><span class="line">  <span class="function">length <span class="title">mumble</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> _val; &#125; </span><br><span class="line"> <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"> <span class="comment">// length必须在“本类对它的第一个操作”之前被看到</span></span><br><span class="line"> <span class="comment">// 这样的声明将使先前的参考操作不合法</span></span><br><span class="line"> <span class="keyword">typedef</span> <span class="type">float</span> length;</span><br><span class="line"> length _val;</span><br><span class="line"> <span class="comment">// ...</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序中，<code>length</code>的类型在两个<code>member function signatures</code>中都决议为<code>global typedef</code>，也就是<code>int</code>。当后续再有<code>length</code>的<code>nested typedef</code>声明出现时，<code>C++</code>标准就把稍早的绑定标示为非法。<strong>因此，请总是把<code>nested type</code>声明放在类的起始处。</strong></p>
+<h2 id="二、数据成员的布局"><a href="#二、数据成员的布局" class="headerlink" title="二、数据成员的布局"></a>二、数据成员的布局</h2><ul>
+<li>非静态的数据成员在类对象中的排列顺序和其被声明的顺序一样；</li>
+<li>静态数据成员存储在程序的数据段中和个别的类对象无关；</li>
+<li>编译器可能会合成一些内部使用的数据成员，以支持整个对象模型。<code>vptr</code>就是这样的东西，目前编译器都把它安插在每一个“内含虚函数的类”对象内。传统上它被放在所有显式声明的成员的最后，不过也有些编译器将它放在一个类对象最前端。</li>
+</ul>
+<h2 id="三、数据成员的存取"><a href="#三、数据成员的存取" class="headerlink" title="三、数据成员的存取"></a>三、数据成员的存取</h2><p>我们来看下述一段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Point3d origin, *pt = &amp;origin;</span><br><span class="line">origin.x = <span class="number">0.0</span>; </span><br><span class="line">pt-&gt;x = <span class="number">0.0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>origin</code>存取，和通过<code>pt</code>存取有什么区别？</p>
+<h3 id="3-1-静态数据成员"><a href="#3-1-静态数据成员" class="headerlink" title="3.1 静态数据成员"></a>3.1 静态数据成员</h3><p>每一个静态数据成员只有一个实例（不管是简单类，继承类），存放在程序的数据段中。每一次程序取值静态成员时，就会被内部转化为对该实例的直接参考操作。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// origin.chunkSize = 250;</span></span><br><span class="line">Point3d::chunkSize = <span class="number">250</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// pt-&gt;chunkSize = 250;</span></span><br><span class="line">Point3d::chunkSize = <span class="number">250</span>;</span><br></pre></td></tr></table></figure>
+
+<p>从指令执行的观点来看，通过一个指针和通过一个对象来存取成员，结论完全相同。</p>
+<blockquote>
+<p>经由<code>.</code>对一个静态数据成员进行存取操作只是文法上的一种便宜行事而已。静态成员其实不在类对象内部，因此存取静态成员并不需要通过类对象。同时，若取一个静态数据成员的地址，会得到一个指向其数据类型的指针，而不是一个指向其类成员的指针。</p>
+</blockquote>
+<p>如果一个静态数据成员是经由函数调用，或其他某些语法而被存取呢？</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C++标准明确要求foobar()必须被求值，虽然结果并没用</span></span><br><span class="line"><span class="comment">// foobar().chunkSize = 250;</span></span><br><span class="line"><span class="comment">// 可能的转化方式</span></span><br><span class="line">(<span class="type">void</span>) <span class="built_in">foobar</span>();</span><br><span class="line">Point3d.chunkSize = <span class="number">250</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-非静态数据成员"><a href="#3-2-非静态数据成员" class="headerlink" title="3.2 非静态数据成员"></a>3.2 非静态数据成员</h3><p>非静态数据成员直接存放在类对象内部。除非经由显式的或隐式的类对象，否则没有办法直接存取他们。</p>
+<blockquote>
+<p>只要在一个成员函数中直接处理一个非静态数据成员，所谓“implicit class object”就会发生。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Point3d <span class="title">Point3d::translate</span><span class="params">( <span class="type">const</span> Point3d &amp;pt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  x += pt.x;</span><br><span class="line">  y += pt.y;</span><br><span class="line">  z += pt.z;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 表面上所看到的是对x, y, z的直接存取，事实上是经由一个“implicit class object”(由this指针表达)完成的</span></span><br><span class="line"><span class="comment">// 成员函数内部转化</span></span><br><span class="line"><span class="function">Point3d <span class="title">Point3d::translate</span><span class="params">(Point3d *<span class="type">const</span> <span class="keyword">this</span>, <span class="type">const</span> Point3d &amp;pt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">this</span>-&gt;x += pt.x;</span><br><span class="line">  <span class="keyword">this</span>-&gt;y += pt.y;</span><br><span class="line">  <span class="keyword">this</span>-&gt;z += pt.z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>欲对一个 非静态变量进行存取操作，编译器需要把类对象的起始地址加上数据成员的偏移地址<code>offset</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">origin._y = <span class="number">0.0</span>;</span><br><span class="line"><span class="comment">//那么地址&amp;origin._y将等于</span></span><br><span class="line">&amp;origin + ( &amp;Point3d::_y - <span class="number">1</span> ); </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>需要注意其中的-1操作。指向数据成员的指针，其offset值总是被加上1，这样可以使编译系统区分出：</p>
+<ul>
+<li>一个指向数据成员的指针，用以指出类的第一个成员；</li>
+<li>一个指向数据成员的指针，没有指出任何成员。</li>
+</ul>
+</blockquote>
+<p>每一个非静态成员的偏移位置在编译时期就可获知，甚至如果成员属于一个基类子对象（派生自单一或者多重继承链）也是一样。因此，存取一个非静态数据成员，其效率和存取一个<code>C struct member</code>或非派生类的成员一样。</p>
+<p>虚拟继承将为“经由基类子对象存取类成员”导入一层新的间接性，比如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Point3d *pt3d;</span><br><span class="line">pt3d-&gt;_x = <span class="number">0.0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其执行效率在<code>_x</code>是一个结构体成员、一个类成员、单一继承、多重继承的情况下都完全相同。但如果<code>_x</code>是一个虚基类的成员，存取速度会稍慢一点。</p>
+<h2 id="四、继承于数据成员"><a href="#四、继承于数据成员" class="headerlink" title="四、继承于数据成员"></a>四、继承于数据成员</h2><p>在 <code>C++</code> 继承模型中，一个派生类所表现出来的东西，是其自己的成员加上其基类成员的总和。</p>
+<p>以 <code>2D</code> 或 <code>3D</code>坐标点提供两个抽象数据类型为例：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point2d</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// constructor(s)</span></span><br><span class="line">  <span class="comment">// operations</span></span><br><span class="line">  <span class="comment">// access functions</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> x, y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span> &#123;</span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  <span class="comment">// constructor(s)</span></span><br><span class="line">  <span class="comment">// operations</span></span><br><span class="line">  <span class="comment">// access functions</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> x, y, z;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p> 在不含虚函数的情况下，<code>Point2d</code> 和 <code>Point3d</code> 的对象布局图和C 结构体一样。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274bc70ea9cb1403679618.png"
+                      alt="struct data layout"
+                ></p>
+<h3 id="4-1-只要继承不要多态"><a href="#4-1-只要继承不要多态" class="headerlink" title="4.1 只要继承不要多态"></a>4.1 只要继承不要多态</h3><ul>
+<li>一般而言，具体继承并不会增加空间或存取时间上的额外负担。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point2d</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Point2d</span>(<span class="type">float</span> x = <span class="number">0.0</span>, <span class="type">float</span> y = <span class="number">0.0</span>)</span><br><span class="line">    : _x(x), _y(y) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">x</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> _x; &#125;</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">y</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> _y; &#125;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">x</span><span class="params">(<span class="type">float</span> newX)</span> </span>&#123; _x = newX; &#125;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">y</span><span class="params">(<span class="type">float</span> newY)</span> </span>&#123; _y = newY; &#125;</span><br><span class="line">  <span class="type">void</span> <span class="keyword">operator</span>+=(<span class="type">const</span> Point2d&amp; rhs) &#123;</span><br><span class="line">    _x += rhs.<span class="built_in">x</span>();</span><br><span class="line">    _y += rhs.<span class="built_in">y</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...more members</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> _x, _y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span> : <span class="keyword">public</span> Point2d &#123;</span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  <span class="built_in">Point3d</span>(<span class="type">float</span> x = <span class="number">0.0</span>, <span class="type">float</span> y = <span class="number">0.0</span>, <span class="type">float</span> z = <span class="number">0.0</span>)</span><br><span class="line">    : <span class="built_in">Point2d</span>(x, y), _z(z) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">z</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> _z; &#125;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">z</span><span class="params">(<span class="type">float</span> newZ)</span> </span>&#123; _z = newZ; &#125;</span><br><span class="line">  <span class="type">void</span> <span class="keyword">operator</span>+=(<span class="type">const</span> Point3d&amp; rhs) &#123;</span><br><span class="line">    Point2d::<span class="keyword">operator</span>+=(rhs);</span><br><span class="line">    _z += rhs.<span class="built_in">z</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...more members</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> _z;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>Point2d</code> 和 <code>Point3d</code> 继承关系的实物布局，其间并没有声明虚接口。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274be20ea9cb140367dc24.png"
+                      alt="单一继承无虚函数"
+                ></p>
+<ul>
+<li>如果把一个类分解为两层或更多层，有可能会为了“表现类体系之抽象化”而膨胀所需的空间。**<code>C++</code> 语言保证“出现在派生类中的基类子对象有其完整原样性”**。例如下面的实例：</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Concretel</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">int</span> val;</span><br><span class="line">  <span class="type">char</span> bit1;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Concrete2</span> : <span class="keyword">public</span> Concrete1 &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">char</span> bit2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Concrete3</span> : <span class="keyword">public</span> Concrete2 &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">char</span> bit3;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274c2c0ea9cb1403688832.png"
+                      alt="多层级继承数据布局"
+                ></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274c410ea9cb140368b123.png"
+                      alt="多层级继承数据布局2"
+                ></p>
+<h3 id="4-2-加上多态"><a href="#4-2-加上多态" class="headerlink" title="4.2 加上多态"></a>4.2 加上多态</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point2d</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Point2d</span>(<span class="type">float</span> x = <span class="number">0.0</span>, <span class="type">float</span> y = <span class="number">0.0</span>)</span><br><span class="line">    : _x(x), _y(y) &#123;&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// x和y的存取函数与前一版相同。</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 加上z的保留空间（目前什么也没做）</span></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">float</span> <span class="title">z</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="number">0.0</span>; &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">z</span><span class="params">(<span class="type">float</span>)</span> </span>&#123;&#125;</span><br><span class="line">  <span class="keyword">virtual</span> <span class="type">void</span> <span class="keyword">operator</span>+=(<span class="type">const</span> Point2d&amp; rhs) &#123;</span><br><span class="line">    _x += rhs.<span class="built_in">x</span>();</span><br><span class="line">    _y += rhs.<span class="built_in">y</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...more members</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> _x, _y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span> : <span class="keyword">public</span> Point2d &#123;</span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  <span class="built_in">Point3d</span>(<span class="type">float</span> x = <span class="number">0.0</span>, <span class="type">float</span> y = <span class="number">0.0</span>, <span class="type">float</span> z = <span class="number">0.0</span>)</span><br><span class="line">    : <span class="built_in">Point2d</span>(x, y), _z(z) &#123;&#125;</span><br><span class="line">  <span class="function"><span class="type">float</span> <span class="title">z</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> _z; &#125;</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">z</span><span class="params">(<span class="type">float</span> newZ)</span> </span>&#123; _z = newZ; &#125;</span><br><span class="line">  <span class="type">void</span> <span class="keyword">operator</span>+=(<span class="type">const</span> Point2d&amp; rhs) &#123;</span><br><span class="line">    <span class="comment">// 注意上行是Point2d&amp;而非Point3d&amp;</span></span><br><span class="line">    Point2d::<span class="keyword">operator</span>+=(rhs);</span><br><span class="line">    _z += rhs.<span class="built_in">z</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...more members</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="type">float</span> _z;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>加入多态后，势必对我们的 <code>Point2d</code> 类带来空间和存取时间上的额外负担：</p>
+<ul>
+<li>导入一个和 <code>Point2d</code> 有关的虚表，用来存放它所声明的每一个虚函数的地址。这个表的元素一般而言是被声明的虚函数的个数，再加上一个或两个 <code>slots</code> (用于支持<code>runtime type identification</code>)。</li>
+<li>在每一个类对象中导入一个<code>vptr</code>，提供执行期的链接，使每一个对象能够找到相应的虚表。</li>
+<li>加强构造函数，使它能够为<code>vptr</code>设定初值，让它指向类所对应的虚表。这可能意味着在派生类和每一个基类的构造函数中，重新设定<code>vptr</code>的值。</li>
+<li>加强析构函数，使它能够抹消“指向类相关虚表”的<code>vptr</code>。</li>
+</ul>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274bc80ea9cb1403679b84.png"
+                      alt="单一继承含虚函数"
+                ></p>
+<h3 id="4-3-多重继承"><a href="#4-3-多重继承" class="headerlink" title="4.3 多重继承"></a>4.3 多重继承</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point2d</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">float</span> _x, _y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span> : <span class="keyword">public</span> Point2d &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">float</span> _z;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  Vertex *next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex3d</span> : <span class="keyword">public</span> Point3d, <span class="keyword">public</span> Vertex &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">float</span> mumble;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274c6d0ea9cb1403690f0d.png"
+                      alt="继承关系"
+                ></p>
+<p>对一个多重派生对象，将其地址指定给“最左端基类的指针”，情况和单一继承时相同，因为两者都指向相同的起始地址。需付出的成本只有地址的指定操作而已。至于第二个或候机的基类地址指定操作，则需要讲地址修改过去：加上&#x2F;减去介于中间的基类子对象大小。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Vertex3d v3d;</span><br><span class="line">Vertex *pv;</span><br><span class="line">Point2d *p2d;</span><br><span class="line">Point3d *p3d;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.指定操作，需内部转化</span></span><br><span class="line">pv = &amp;v3d;</span><br><span class="line"><span class="comment">// 内部转化</span></span><br><span class="line">pv = (Vertex*)(((<span class="type">char</span>*)&amp;v3d) + <span class="built_in">sizeof</span>(Point3d));</span><br><span class="line"><span class="comment">// 2.指定操作，简单拷贝其地址就好</span></span><br><span class="line">p2d = &amp;v3d;</span><br><span class="line">p3d = &amp;v3d;</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274c580ea9cb140368e2a2.png"
+                      alt="多重继承"
+                ></p>
+<h3 id="4-4-虚拟继承"><a href="#4-4-虚拟继承" class="headerlink" title="4.4 虚拟继承"></a>4.4 虚拟继承</h3><p>类如果内含一个或多个虚基类子对象，将被分割成两部分：一个不变区域和一个共享区域。不变区域中的数据，不管后继如何衍化，总拥有固定的 <code>offset</code> (从对象的开头算起)，所以这一部分数据可以直接存取。至于共享区域，所表现的就是虚基类子对象。这一部分的数据，其位置会因为每次的派生操作而有变化，所以他们只可以被间接存取。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point2d</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">float</span> _x, _y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex</span> : <span class="keyword">public</span> <span class="keyword">virtual</span> Point2d &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  Vertex *next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3d</span> : <span class="keyword">public</span> <span class="keyword">virtual</span> Point2d &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">float</span> _z;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vertex3d</span> : <span class="keyword">public</span> Vertex, <span class="keyword">public</span> Point3d</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">float</span> mumble;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>一般的布局策略是先安排好派生类的不变部分，然后再建立其共享部分。然而，这中间存在一个问题：如何能够存取类的共享部分呢？</p>
+<p>有两种策略可以解决上述问题：</p>
+<ul>
+<li>编译器会在每一个派生类对象中安插一些指针，每一个指针指向一个虚基类。要存取继承得来的虚基类成员，可以通过相关指针间接完成。即，<strong>以指针指向基类的实现模型</strong>。</li>
+</ul>
+<blockquote>
+<p>上述实现模型有两个主要的缺点：</p>
+<ol>
+<li>每一个对象必须针对其每一个虚基类背负一个额外的指针。然而理想上我们却希望类对象有固定的负担，不因为其虚基类的个数而有所变化。</li>
+<li>由于虚拟继承串链的加长，导致间接存取层次的增加。如果我有三层虚拟派生，我就需要三次间接存取。然而理想上我们却希望有固定的存取时间，不因为虚拟派生的深度而改变。</li>
+</ol>
+<p>对于第二个问题，MetaWare和其他编译器到今天仍采用cfron t的原始模型来解决，即，他们经由拷贝操作取得所有的nested 虚基类指针，放到派生类对象之中。这就解决了“固定存取的问题”，虽然付出了一些空间上的代价。下图便说明了这种<strong>以指针指向基类的实现模型</strong>。</p>
+<p>对于第一个问题，一般有两种解决方法。</p>
+<ul>
+<li>微软编译器引入所谓的虚基类表。每一个类对象如果有一个或者多个虚基类，就会有编译器安插一个指针，指向虚基类表。而真正的虚基类指针或被放到该表中。</li>
+<li>在虚函数表中放置虚基类的offset(而不是地址)。</li>
+</ul>
+</blockquote>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274c710ea9cb14036916b9.png"
+                      alt="pointer strategy"
+                ></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://pic.imgdb.cn/item/66274bc80ea9cb1403679952.png"
+                      alt="virtual table offset strategy"
+                ></p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    
+<div class="article-copyright-info-container">
+    <ul class="copyright-info-content">
+        <li class="post-title">
+            <span class="type">本文标题</span>：<span class="content">深入理解C++对象模型(三)</span>
+        </li>
+        <li class="post-author">
+            <span class="type">本文作者</span>：<span class="content">hahahanba</span>
+        </li>
+        <li class="post-time">
+            <span class="type">创建时间</span>：<span class="content">2024-04-23 13:46:02</span>
+        </li>
+        <li class="post-link">
+            <span class="type">本文链接</span>：<span class="content">2024/04/23/深入理解C-对象模型-三/</span>
+        </li>
+        <li class="post-license">
+            <span class="type">版权声明</span>：<span class="content">本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</span>
+        </li>
+    </ul>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B/"><i class="icon fas fa-hashtag"></i>深入理解对象模型</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2024/04/18/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3C-%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B-%E4%BA%8C/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item text-ellipsis">深入理解C++对象模型(二)</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+                
+
+
+    <div class="comments-container">
+        <div id="comments-anchor"></div>
+        <div class="comment-area-title">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        
+            
+
+    <div class="giscus-comments-container">
+        <div class="giscus" id="giscus"></div>
+        <script >
+
+          if (!window?.__getGiscusTheme) {
+            window.__getGiscusTheme = () => {
+              return document.body.classList.contains("dark-mode") ? "dark_dimmed" : "light_tritanopia";
+            };
+          }
+
+          if (!window?.__changeGiscusTheme) {
+            window.__changeGiscusTheme = () => {
+              const iframe = document.querySelector("iframe.giscus-frame");
+              iframe && iframe.contentWindow.postMessage({
+                giscus: {
+                  setConfig: {
+                    theme: __getGiscusTheme()
+                  }
+                }
+              }, "https://giscus.app");
+            };
+          }
+
+          if (!window?.__loadGiscus) {
+            window.__loadGiscus = () => {
+              const script = document.createElement("script");
+              script.async = true;
+              script.src = "https://giscus.app/client.js";
+              script.setAttribute("data-repo", 'hahahanba/comments');
+              script.setAttribute("data-repo-id", 'R_kgDOKGpC9g');
+              script.setAttribute("data-category", 'Announcements');
+              script.setAttribute("data-category-id", 'DIC_kwDOKGpC9s4CYk-p');
+              script.setAttribute("data-reactions-enabled", '1');
+              script.setAttribute("data-lang", 'zh-CN');
+              script.setAttribute("data-mapping", "pathname");
+              script.setAttribute("data-strict", "0");
+              script.setAttribute("data-emit-metadata", "0");
+              script.setAttribute("data-input-position", "top");
+              script.setAttribute("crossorigin", "anonymous");
+              script.setAttribute("loading", "lazy");
+              script.setAttribute("data-theme", __getGiscusTheme());
+              document.querySelector(".giscus-comments-container").appendChild(script);
+
+              const toggleThemeBtn = document.querySelector(".tool-dark-light-toggle");
+              toggleThemeBtn && toggleThemeBtn.addEventListener("click", () => {
+                __changeGiscusTheme();
+              });
+            }
+          }
+
+          if ('false' === "true") {
+            setTimeout(() => {
+              __loadGiscus();
+            }, 1000);
+          } else {
+            window.addEventListener("DOMContentLoaded", () => {
+              setTimeout(() => {
+                __loadGiscus();
+              }, 1000);
+            });
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+            
+        </div>
+
+        
+            <div class="pc-post-toc left-toc">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Data%E8%AF%AD%E4%B9%89%E5%AD%A6"><span class="nav-number">1.</span> <span class="nav-text">Data语义学</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E7%9A%84%E7%BB%91%E5%AE%9A"><span class="nav-number">1.1.</span> <span class="nav-text">一、数据成员的绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E7%9A%84%E5%B8%83%E5%B1%80"><span class="nav-number">1.2.</span> <span class="nav-text">二、数据成员的布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E7%9A%84%E5%AD%98%E5%8F%96"><span class="nav-number">1.3.</span> <span class="nav-text">三、数据成员的存取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 静态数据成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E9%9D%9E%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 非静态数据成员</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%BB%A7%E6%89%BF%E4%BA%8E%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.4.</span> <span class="nav-text">四、继承于数据成员</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%8F%AA%E8%A6%81%E7%BB%A7%E6%89%BF%E4%B8%8D%E8%A6%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 只要继承不要多态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%8A%A0%E4%B8%8A%E5%A4%9A%E6%80%81"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 加上多态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 多重继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E8%99%9A%E6%8B%9F%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 虚拟继承</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2023</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">hahahanba</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.7.3</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">全站总字数</span>
+                    <span class="item-value border-box word">22.2k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访问人数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">总访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools left-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Data%E8%AF%AD%E4%B9%89%E5%AD%A6"><span class="nav-number">1.</span> <span class="nav-text">Data语义学</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E7%9A%84%E7%BB%91%E5%AE%9A"><span class="nav-number">1.1.</span> <span class="nav-text">一、数据成员的绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E7%9A%84%E5%B8%83%E5%B1%80"><span class="nav-number">1.2.</span> <span class="nav-text">二、数据成员的布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E7%9A%84%E5%AD%98%E5%8F%96"><span class="nav-number">1.3.</span> <span class="nav-text">三、数据成员的存取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 静态数据成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E9%9D%9E%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 非静态数据成员</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%BB%A7%E6%89%BF%E4%BA%8E%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98"><span class="nav-number">1.4.</span> <span class="nav-text">四、继承于数据成员</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%8F%AA%E8%A6%81%E7%BB%A7%E6%89%BF%E4%B8%8D%E8%A6%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 只要继承不要多态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%8A%A0%E4%B8%8A%E5%A4%9A%E6%80%81"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 加上多态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 多重继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E8%99%9A%E6%8B%9F%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 虚拟继承</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/dark-light-toggle.js"></script>
+
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/code-block.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/lazyload.js"></script>
+
+
+<div class="post-scripts">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/post-helper.js"></script>
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/libs/anime.min.js"></script>
+        
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.7.3/source/js/toc.js"></script>
+        
+    
+    
+    
+</div>
+
+
+
+
+</body>
+</html>
